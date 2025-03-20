@@ -1,16 +1,17 @@
 package org.vinerdream.overpoweredBundles.items;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.vinerdream.overpoweredBundles.OverpoweredBundles;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class EnchantedBookBundle extends CustomBundle {
     private static final NamespacedKey BUNDLE_DATA_KEY = new NamespacedKey(OverpoweredBundles.INSTANCE, "book-bundle-data");
@@ -53,6 +54,7 @@ public class EnchantedBookBundle extends CustomBundle {
         items = Arrays.copyOf(items, items.length + 1);
         items[items.length - 1] = item;
         meta.getPersistentDataContainer().set(BUNDLE_DATA_KEY, PersistentDataType.BYTE_ARRAY, ItemStack.serializeItemsAsBytes(items));
+        meta.lore(getLore(items));
         bundle.setItemMeta(meta);
         return true;
     }
@@ -60,7 +62,7 @@ public class EnchantedBookBundle extends CustomBundle {
     @Override
     public ItemStack removeItem(ItemStack bundle) {
         final ItemMeta meta = bundle.getItemMeta();
-        final ItemStack[] items = ItemStack.deserializeItemsFromBytes(Objects.requireNonNull(
+        ItemStack[] items = ItemStack.deserializeItemsFromBytes(Objects.requireNonNull(
                 meta.getPersistentDataContainer().get(BUNDLE_DATA_KEY, PersistentDataType.BYTE_ARRAY)
         ));
         if (items.length == 0) {
@@ -68,12 +70,56 @@ public class EnchantedBookBundle extends CustomBundle {
         }
         final List<ItemStack> itemList = new ArrayList<>(Arrays.stream(items).toList());
         final ItemStack item = itemList.removeFirst();
+        items = itemList.toArray(ItemStack[]::new);
         meta.getPersistentDataContainer().set(
                 BUNDLE_DATA_KEY,
                 PersistentDataType.BYTE_ARRAY,
-                ItemStack.serializeItemsAsBytes(itemList.toArray(ItemStack[]::new))
+                ItemStack.serializeItemsAsBytes(items)
         );
+        meta.lore(getLore(items));
         bundle.setItemMeta(meta);
         return item;
+    }
+
+    private List<Component> getLore(ItemStack[] items) {
+        final List<Component> components = new ArrayList<>();
+        final List<Integer> counts = new ArrayList<>();
+        for (ItemStack item : items) {
+            if (!(item.getItemMeta() instanceof EnchantmentStorageMeta meta)) continue;
+            Component component = Component.empty();
+            final List<Map.Entry<Enchantment, Integer>> entries = new ArrayList<>(meta.getStoredEnchants().entrySet().stream().toList());
+            final Map.Entry<Enchantment, Integer> lastEntry = entries.removeLast();
+            for (Map.Entry<Enchantment, Integer> entry : entries) {
+                component = component.append(Component.translatable(entry.getKey())).append(Component.text(" " + entry.getValue() + ", ")).decoration(TextDecoration.ITALIC, false);
+            }
+            component = component.append(Component.translatable(lastEntry.getKey())).append(Component.text(" " + lastEntry.getValue())).decoration(TextDecoration.ITALIC, false);
+            final int index = components.indexOf(component);
+            if (index == -1) {
+                components.add(component);
+                counts.add(1);
+            } else {
+                counts.add(index, counts.remove(index) + 1);
+            }
+        }
+        final int maxLoreSize = OverpoweredBundles.INSTANCE.getConfig().getInt("max-lore-size");
+        boolean hasMore = false;
+        final List<Component> result = new ArrayList<>();
+        for (int i = 0; i < components.size(); i++) {
+            if (i == maxLoreSize) {
+                hasMore = true;
+                break;
+            }
+            if (counts.get(i) == 1) {
+                result.add(components.get(i));
+            } else {
+                result.add(components.get(i).append(Component.text(" x" + counts.get(i))));
+            }
+        }
+        if (hasMore) {
+            result.add(Component.text(Objects.requireNonNull(
+                    OverpoweredBundles.INSTANCE.getConfig().getString("messages.lore-more")
+            ).replace("%count%", String.valueOf(components.size() - maxLoreSize))));
+        }
+        return result;
     }
 }

@@ -1,4 +1,6 @@
 enchanted-book-bundle-capacity: 64
+max-lore-size: 5
 
 messages:
   enchanted-book-bundle: Enchanted book bundle
+  lore-more: ...%count% more
