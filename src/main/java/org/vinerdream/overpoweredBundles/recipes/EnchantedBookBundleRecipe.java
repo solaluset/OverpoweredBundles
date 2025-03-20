@@ -5,10 +5,10 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ShapedRecipe;
 import org.vinerdream.overpoweredBundles.OverpoweredBundles;
-import org.vinerdream.overpoweredBundles.items.EnchantedBookBundle;
+import org.vinerdream.overpoweredBundles.items.CustomBundle;
 
 public class EnchantedBookBundleRecipe {
-    public EnchantedBookBundleRecipe(OverpoweredBundles plugin, EnchantedBookBundle bundle) {
+    public EnchantedBookBundleRecipe(OverpoweredBundles plugin, CustomBundle bundle) {
         final ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, "enchanted_book_bundle_recipe"), bundle.getEmptyBundle());
         recipe.shape(
                 " A ",
