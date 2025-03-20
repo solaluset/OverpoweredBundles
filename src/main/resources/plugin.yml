@@ -1,0 +1,5 @@
+name: OverpoweredBundles
+version: '1.0-SNAPSHOT'
+main: org.vinerdream.overpoweredBundles.OverpoweredBundles
+api-version: '1.21'
+authors: [ VinerDream ]
