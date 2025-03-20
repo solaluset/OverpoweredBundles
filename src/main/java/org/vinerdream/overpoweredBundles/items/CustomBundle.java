@@ -12,4 +12,6 @@ public abstract class CustomBundle {
     public abstract boolean addItem(ItemStack bundle, ItemStack item);
 
     public abstract ItemStack removeItem(ItemStack bundle);
+
+    public abstract void rotateItems(ItemStack bundle);
 }

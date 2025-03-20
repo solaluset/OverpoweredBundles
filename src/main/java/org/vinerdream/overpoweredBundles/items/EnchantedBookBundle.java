@@ -81,6 +81,11 @@ public class EnchantedBookBundle extends CustomBundle {
         return item;
     }
 
+    @Override
+    public void rotateItems(ItemStack bundle) {
+        addItem(bundle, removeItem(bundle));
+    }
+
     private List<Component> getLore(ItemStack[] items) {
         final List<Component> components = new ArrayList<>();
         final List<Integer> counts = new ArrayList<>();

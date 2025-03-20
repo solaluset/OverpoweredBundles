@@ -18,7 +18,19 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (event.isShiftClick() || event.getWhoClicked().getGameMode().equals(GameMode.CREATIVE) || event.getSlot() < 0) return;
+        if (event.getWhoClicked().getGameMode().equals(GameMode.CREATIVE) || event.getSlot() < 0) return;
+        if (event.isShiftClick()) {
+            if (event.isRightClick()) {
+                for (CustomBundle customBundle : plugin.getCustomBundles()) {
+                    if (customBundle.isBundle(event.getCurrentItem())) {
+                        customBundle.rotateItems(event.getCurrentItem());
+                        event.setCancelled(true);
+                        return;
+                    }
+                }
+            }
+            return;
+        }
         if (event.isLeftClick()) {
             for (CustomBundle customBundle : plugin.getCustomBundles()) {
                 if (customBundle.isBundle(event.getCursor()) && customBundle.isSuitableForBundle(event.getCurrentItem())) {
