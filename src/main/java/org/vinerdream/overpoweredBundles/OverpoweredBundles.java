@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.vinerdream.overpoweredBundles.items.CustomBundle;
+import org.vinerdream.overpoweredBundles.listeners.CraftListener;
 import org.vinerdream.overpoweredBundles.listeners.InventoryListener;
 import org.vinerdream.overpoweredBundles.recipes.EnchantedBookBundleRecipe;
 import org.vinerdream.overpoweredBundles.recipes.PotionBundleRecipe;
@@ -78,6 +79,7 @@ public final class OverpoweredBundles extends JavaPlugin {
         customBundles.add(potionBundle);
 
         Bukkit.getPluginManager().registerEvents(new InventoryListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new CraftListener(this), this);
     }
 
     @Override
