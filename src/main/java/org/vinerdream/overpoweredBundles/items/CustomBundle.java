@@ -16,6 +16,7 @@ public class CustomBundle {
     private final NamespacedKey dataKey;
     private final Component itemName;
     private final int capacity;
+    private final NamespacedKey model;
     private final Function<ItemStack, Boolean> suitabilityChecker;
     private final Function<ItemStack, Component> loreMaker;
 
@@ -23,12 +24,14 @@ public class CustomBundle {
             NamespacedKey dataKey,
             Component itemName,
             int capacity,
+            NamespacedKey model,
             Function<ItemStack, Boolean> suitabilityChecker,
             Function<ItemStack, Component> loreMaker
     ) {
         this.dataKey = dataKey;
         this.itemName = itemName;
         this.capacity = capacity;
+        this.model = model;
         this.suitabilityChecker = suitabilityChecker;
         this.loreMaker = loreMaker;
     }
@@ -38,6 +41,7 @@ public class CustomBundle {
         final ItemMeta meta = item.getItemMeta();
         meta.setMaxStackSize(1);
         meta.itemName(itemName);
+        meta.setItemModel(model);
         meta.getPersistentDataContainer().set(
                 dataKey,
                 PersistentDataType.BYTE_ARRAY,

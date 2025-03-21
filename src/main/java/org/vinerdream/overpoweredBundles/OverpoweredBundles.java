@@ -36,6 +36,7 @@ public final class OverpoweredBundles extends JavaPlugin {
                 new NamespacedKey(this, "book-bundle-data"),
                 getConfig().getRichMessage("messages.enchanted-book-bundle"),
                 getConfig().getInt("enchanted-book-bundle-capacity"),
+                new NamespacedKey(this, "enchanted_book_bundle"),
                 item -> item != null && item.getType().equals(Material.ENCHANTED_BOOK),
                 item -> {
                     if (!(item.getItemMeta() instanceof EnchantmentStorageMeta meta)) return null;
@@ -56,6 +57,7 @@ public final class OverpoweredBundles extends JavaPlugin {
                 new NamespacedKey(this, "potion-bundle-data"),
                 getConfig().getRichMessage("messages.potion-bundle"),
                 getConfig().getInt("potion-bundle-capacity"),
+                new NamespacedKey(this, "potion_bundle"),
                 item -> item != null && item.getItemMeta() instanceof PotionMeta,
                 item -> {
                     final PotionMeta meta = (PotionMeta) item.getItemMeta();
