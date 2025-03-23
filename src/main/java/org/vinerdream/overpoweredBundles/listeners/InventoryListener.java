@@ -4,6 +4,7 @@ import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.vinerdream.overpoweredBundles.OverpoweredBundles;
 import org.vinerdream.overpoweredBundles.items.CustomBundle;
@@ -18,6 +19,7 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
+        if (event.getSlotType() != InventoryType.SlotType.CONTAINER) return;
         if (event.getWhoClicked().getGameMode().equals(GameMode.CREATIVE) || event.getSlot() < 0) return;
         if (event.isShiftClick()) {
             if (event.isRightClick()) {
