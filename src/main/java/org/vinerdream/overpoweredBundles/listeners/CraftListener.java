@@ -8,6 +8,8 @@ import org.bukkit.inventory.meta.BundleMeta;
 import org.vinerdream.overpoweredBundles.OverpoweredBundles;
 import org.vinerdream.overpoweredBundles.items.CustomBundle;
 
+import java.util.Arrays;
+
 public class CraftListener implements Listener {
     private final OverpoweredBundles plugin;
 
@@ -22,9 +24,13 @@ public class CraftListener implements Listener {
                 for (ItemStack item : event.getInventory().getMatrix()) {
                     if (item != null && item.getItemMeta() instanceof BundleMeta meta && meta.hasItems()) {
                         event.getInventory().setResult(null);
-                        break;
+                        return;
                     }
                 }
+            }
+            if (Arrays.stream(event.getInventory().getMatrix()).anyMatch(customBundle::isBundle)) {
+                event.getInventory().setResult(null);
+                return;
             }
         }
     }
