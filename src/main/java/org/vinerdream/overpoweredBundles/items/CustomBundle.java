@@ -14,7 +14,7 @@ import java.util.function.Function;
 
 public class CustomBundle {
     private final NamespacedKey dataKey;
-    private final Component itemName;
+    private final String itemTranslationKey;
     private final int capacity;
     private final NamespacedKey model;
     private final Function<ItemStack, Boolean> suitabilityChecker;
@@ -22,14 +22,14 @@ public class CustomBundle {
 
     public CustomBundle(
             NamespacedKey dataKey,
-            Component itemName,
+            String itemTranslationKey,
             int capacity,
             NamespacedKey model,
             Function<ItemStack, Boolean> suitabilityChecker,
             Function<ItemStack, Component> loreMaker
     ) {
         this.dataKey = dataKey;
-        this.itemName = itemName;
+        this.itemTranslationKey = itemTranslationKey;
         this.capacity = capacity;
         this.model = model;
         this.suitabilityChecker = suitabilityChecker;
@@ -40,7 +40,7 @@ public class CustomBundle {
         final ItemStack item = new ItemStack(Material.PAPER);
         final ItemMeta meta = item.getItemMeta();
         meta.setMaxStackSize(1);
-        meta.itemName(itemName);
+        meta.itemName(Component.translatable(itemTranslationKey));
         meta.setItemModel(model);
         meta.getPersistentDataContainer().set(
                 dataKey,
@@ -130,9 +130,11 @@ public class CustomBundle {
             }
         }
         if (hasMore) {
-            result.add(Component.text(Objects.requireNonNull(
-                    OverpoweredBundles.INSTANCE.getConfig().getString("messages.lore-more")
-            ).replace("%count%", String.valueOf(components.size() - maxLoreSize))));
+            result.add(
+                    Component.translatable("overpoweredbundles.lore-more-1")
+                            .append(Component.text(components.size() - maxLoreSize))
+                            .append(Component.translatable("overpoweredbundles.lore-more-2"))
+            );
         }
         return result;
     }

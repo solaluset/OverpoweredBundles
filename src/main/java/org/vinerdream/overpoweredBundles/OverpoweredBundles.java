@@ -19,7 +19,6 @@ import org.vinerdream.overpoweredBundles.recipes.PotionBundleRecipe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public final class OverpoweredBundles extends JavaPlugin {
     public static OverpoweredBundles INSTANCE;
@@ -35,9 +34,9 @@ public final class OverpoweredBundles extends JavaPlugin {
 
         final CustomBundle enchantedBookBundle = new CustomBundle(
                 new NamespacedKey(this, "book-bundle-data"),
-                getConfig().getRichMessage("messages.enchanted-book-bundle"),
+                "item.overpoweredbundles.enchanted-book-bundle",
                 getConfig().getInt("enchanted-book-bundle-capacity"),
-                new NamespacedKey(this, "enchanted_book_bundle"),
+                new NamespacedKey(this, "enchanted-book-bundle"),
                 item -> item != null && item.getType().equals(Material.ENCHANTED_BOOK),
                 item -> {
                     if (!(item.getItemMeta() instanceof EnchantmentStorageMeta meta)) return null;
@@ -56,15 +55,15 @@ public final class OverpoweredBundles extends JavaPlugin {
 
         final CustomBundle potionBundle = new CustomBundle(
                 new NamespacedKey(this, "potion-bundle-data"),
-                getConfig().getRichMessage("messages.potion-bundle"),
+                "item.overpoweredbundles.potion-bundle",
                 getConfig().getInt("potion-bundle-capacity"),
-                new NamespacedKey(this, "potion_bundle"),
+                new NamespacedKey(this, "potion-bundle"),
                 item -> item != null && item.getItemMeta() instanceof PotionMeta,
                 item -> {
                     final PotionMeta meta = (PotionMeta) item.getItemMeta();
                     if (meta.customName() != null) return meta.customName();
-                    if (meta.getBasePotionType() == null) return Component.text(
-                            Objects.requireNonNull(getConfig().getString("unknown-potion"))
+                    if (meta.getBasePotionType() == null) return Component.translatable(
+                            "overpoweredbundles.unknown-potion"
                     ).decoration(TextDecoration.ITALIC, false);
                     final List<PotionEffect> effects = new ArrayList<>(meta.getBasePotionType().getPotionEffects());
                     final PotionEffect lastEffect = effects.removeLast();

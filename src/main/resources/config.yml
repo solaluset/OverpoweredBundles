@@ -1,9 +1,3 @@
 enchanted-book-bundle-capacity: 64
 potion-bundle-capacity: 16
 max-lore-size: 5
-
-messages:
-  enchanted-book-bundle: Enchanted book bundle
-  potion-bundle: Potion bundle
-  unknown-potion: Unknown potion
-  lore-more: ...%count% more
