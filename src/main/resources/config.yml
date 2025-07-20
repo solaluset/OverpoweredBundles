@@ -1,3 +1,9 @@
-enchanted-book-bundle-capacity: 64
-potion-bundle-capacity: 16
+bundles:
+  enchanted-book:
+    enabled: true
+    capacity: 64
+  potion:
+    enabled: true
+    capacity: 16
+
 max-lore-size: 5

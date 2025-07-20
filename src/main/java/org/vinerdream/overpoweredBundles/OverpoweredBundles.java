@@ -32,50 +32,54 @@ public final class OverpoweredBundles extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
 
-        final CustomBundle enchantedBookBundle = new CustomBundle(
-                new NamespacedKey(this, "book-bundle-data"),
-                "item.overpoweredbundles.enchanted-book-bundle",
-                getConfig().getInt("enchanted-book-bundle-capacity"),
-                new NamespacedKey(this, "enchanted-book-bundle"),
-                item -> item != null && item.getType().equals(Material.ENCHANTED_BOOK),
-                item -> {
-                    if (!(item.getItemMeta() instanceof EnchantmentStorageMeta meta)) return null;
-                    if (meta.customName() != null) return meta.customName();
-                    Component component = Component.empty();
-                    final List<Map.Entry<Enchantment, Integer>> entries = new ArrayList<>(meta.getStoredEnchants().entrySet().stream().toList());
-                    final Map.Entry<Enchantment, Integer> lastEntry = entries.removeLast();
-                    for (Map.Entry<Enchantment, Integer> entry : entries) {
-                        component = component.append(Component.translatable(entry.getKey())).append(Component.text(" " + entry.getValue() + ", "));
+        if (getConfig().getBoolean("bundles.enchanted-book.enabled")) {
+            final CustomBundle enchantedBookBundle = new CustomBundle(
+                    new NamespacedKey(this, "book-bundle-data"),
+                    "item.overpoweredbundles.enchanted-book-bundle",
+                    getConfig().getInt("bundles.enchanted-book.capacity"),
+                    new NamespacedKey(this, "enchanted-book-bundle"),
+                    item -> item != null && item.getType().equals(Material.ENCHANTED_BOOK),
+                    item -> {
+                        if (!(item.getItemMeta() instanceof EnchantmentStorageMeta meta)) return null;
+                        if (meta.customName() != null) return meta.customName();
+                        Component component = Component.empty();
+                        final List<Map.Entry<Enchantment, Integer>> entries = new ArrayList<>(meta.getStoredEnchants().entrySet().stream().toList());
+                        final Map.Entry<Enchantment, Integer> lastEntry = entries.removeLast();
+                        for (Map.Entry<Enchantment, Integer> entry : entries) {
+                            component = component.append(Component.translatable(entry.getKey())).append(Component.text(" " + entry.getValue() + ", "));
+                        }
+                        return component.append(Component.translatable(lastEntry.getKey())).append(Component.text(" " + lastEntry.getValue())).decoration(TextDecoration.ITALIC, false);
                     }
-                    return component.append(Component.translatable(lastEntry.getKey())).append(Component.text(" " + lastEntry.getValue())).decoration(TextDecoration.ITALIC, false);
-                }
-        );
-        new EnchantedBookBundleRecipe(this, enchantedBookBundle);
-        customBundles.add(enchantedBookBundle);
+            );
+            new EnchantedBookBundleRecipe(this, enchantedBookBundle);
+            customBundles.add(enchantedBookBundle);
+        }
 
-        final CustomBundle potionBundle = new CustomBundle(
-                new NamespacedKey(this, "potion-bundle-data"),
-                "item.overpoweredbundles.potion-bundle",
-                getConfig().getInt("potion-bundle-capacity"),
-                new NamespacedKey(this, "potion-bundle"),
-                item -> item != null && item.getItemMeta() instanceof PotionMeta,
-                item -> {
-                    if (!(item.getItemMeta() instanceof PotionMeta meta)) return null;
-                    if (meta.customName() != null) return meta.customName();
-                    if (meta.getBasePotionType() == null) return Component.translatable(
-                            "overpoweredbundles.unknown-potion"
-                    ).decoration(TextDecoration.ITALIC, false);
-                    final List<PotionEffect> effects = new ArrayList<>(meta.getBasePotionType().getPotionEffects());
-                    final PotionEffect lastEffect = effects.removeLast();
-                    Component component = Component.empty();
-                    for (PotionEffect effect : effects) {
-                        component = component.append(Component.translatable(effect.getType())).append(Component.text(" " + (effect.getAmplifier() + 1) + ", "));
+        if (getConfig().getBoolean("bundles.potion.enabled")) {
+            final CustomBundle potionBundle = new CustomBundle(
+                    new NamespacedKey(this, "potion-bundle-data"),
+                    "item.overpoweredbundles.potion-bundle",
+                    getConfig().getInt("bundles.potion.capacity"),
+                    new NamespacedKey(this, "potion-bundle"),
+                    item -> item != null && item.getItemMeta() instanceof PotionMeta,
+                    item -> {
+                        if (!(item.getItemMeta() instanceof PotionMeta meta)) return null;
+                        if (meta.customName() != null) return meta.customName();
+                        if (meta.getBasePotionType() == null) return Component.translatable(
+                                "overpoweredbundles.unknown-potion"
+                        ).decoration(TextDecoration.ITALIC, false);
+                        final List<PotionEffect> effects = new ArrayList<>(meta.getBasePotionType().getPotionEffects());
+                        final PotionEffect lastEffect = effects.removeLast();
+                        Component component = Component.empty();
+                        for (PotionEffect effect : effects) {
+                            component = component.append(Component.translatable(effect.getType())).append(Component.text(" " + (effect.getAmplifier() + 1) + ", "));
+                        }
+                        return component.append(Component.translatable(lastEffect.getType())).append(Component.text(" " + (lastEffect.getAmplifier() + 1))).decoration(TextDecoration.ITALIC, false);
                     }
-                    return component.append(Component.translatable(lastEffect.getType())).append(Component.text(" " + (lastEffect.getAmplifier() + 1))).decoration(TextDecoration.ITALIC, false);
-                }
-        );
-        new PotionBundleRecipe(this, potionBundle);
-        customBundles.add(potionBundle);
+            );
+            new PotionBundleRecipe(this, potionBundle);
+            customBundles.add(potionBundle);
+        }
 
         Bukkit.getPluginManager().registerEvents(new InventoryListener(this), this);
         Bukkit.getPluginManager().registerEvents(new CraftListener(this), this);
