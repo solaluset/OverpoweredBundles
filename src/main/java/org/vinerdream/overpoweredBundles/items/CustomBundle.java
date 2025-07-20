@@ -103,36 +103,33 @@ public class CustomBundle {
 
     private List<Component> getLore(ItemStack[] items) {
         final List<Component> components = new ArrayList<>();
-        final List<Integer> counts = new ArrayList<>();
+        final Map<Component, Integer> counts = new HashMap<>();
         for (ItemStack item : items) {
             final Component component = loreMaker.apply(item);
             if (component == null) continue;
-            final int index = components.indexOf(component);
-            if (index == -1) {
-                components.add(component);
-                counts.add(1);
+            if (counts.containsKey(component)) {
+                counts.put(component, counts.get(component) + 1);
             } else {
-                counts.add(index, counts.remove(index) + 1);
+                components.add(component);
+                counts.put(component, 1);
             }
         }
+
         final int maxLoreSize = OverpoweredBundles.INSTANCE.getConfig().getInt("max-lore-size");
-        boolean hasMore = false;
+        final boolean hasMore = components.size() > maxLoreSize;
         final List<Component> result = new ArrayList<>();
-        for (int i = 0; i < components.size(); i++) {
-            if (i == maxLoreSize) {
-                hasMore = true;
-                break;
-            }
-            if (counts.get(i) == 1) {
-                result.add(components.get(i));
+        final Iterable<Component> iterableStream = components.stream().limit(hasMore ? maxLoreSize - 1 : maxLoreSize)::iterator;
+        for (Component component : iterableStream) {
+            if (counts.get(component) == 1) {
+                result.add(component);
             } else {
-                result.add(components.get(i).append(Component.text(" x" + counts.get(i))));
+                result.add(component.append(Component.text(" x" + counts.get(component))));
             }
         }
         if (hasMore) {
             result.add(
                     Component.translatable("overpoweredbundles.lore-more-1")
-                            .append(Component.text(components.size() - maxLoreSize))
+                            .append(Component.text(components.size() - maxLoreSize + 1))
                             .append(Component.translatable("overpoweredbundles.lore-more-2"))
             );
         }
