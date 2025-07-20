@@ -60,7 +60,7 @@ public final class OverpoweredBundles extends JavaPlugin {
                 new NamespacedKey(this, "potion-bundle"),
                 item -> item != null && item.getItemMeta() instanceof PotionMeta,
                 item -> {
-                    final PotionMeta meta = (PotionMeta) item.getItemMeta();
+                    if (!(item.getItemMeta() instanceof PotionMeta meta)) return null;
                     if (meta.customName() != null) return meta.customName();
                     if (meta.getBasePotionType() == null) return Component.translatable(
                             "overpoweredbundles.unknown-potion"
